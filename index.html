@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C.A.R. Apex Garage</title>
+
+<style>
+:root {
+  --bg: #08090d;
+  --panel: #11131a;
+  --panel2: #181b23;
+  --text: #f5f5f5;
+  --muted: #a8adba;
+  --red: #ff3b30;
+  --gold: #ffc857;
+  --line: #292d38;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 20% 0%, #35140f 0%, #08090d 40%),
+    var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  background: rgba(8, 9, 13, 0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.logo {
+  margin-right: auto;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.logo span {
+  color: var(--red);
+}
+
+button {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+button:hover {
+  border-color: var(--red);
+  transform: translateY(-2px);
+}
+
+.primary {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.hero {
+  min-height: 75vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 70px 20px;
+  background:
+    linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.8)),
+    radial-gradient(circle at center, #66180f55, transparent 48%);
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(55px, 11vw, 110px);
+  line-height: 0.88;
+  font-weight: 900;
+}
+
+.hero h1 span {
+  color: var(--red);
+}
+
+.hero p {
+  max-width: 760px;
+  margin: 25px auto;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.cta {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 30px 18px 80px;
+}
+
+.section {
+  margin: 55px 0;
+}
+
+.section h2 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.sub {
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.card {
+  background: linear-gradient(145deg, var(--panel), var(--panel2));
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  padding: 19px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: #555b6b;
+}
+
+.card h3 {
+  margin-top: 8px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 5px 9px;
+  margin: 3px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  color: var(--gold);
+  font-size: 12px;
+}
+
+.machine {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.emoji {
+  font-size: 42px;
+}
+
+.badge {
+  font-size: 44px;
+}
+
+.rule {
+  border-left: 3px solid var(--red);
+}
+
+.panel {
+  display: none;
+}
+
+.panel.active {
+  display: block;
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+
+.result {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.quiz button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 8px 0;
+}
+
+.correct {
+  border-color: #39d98a !important;
+}
+
+.wrong {
+  border-color: #ff5c5c !important;
+}
+
+.small {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.maximize {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 200;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  font-size: 22px;
+}
+
+footer {
+  text-align: center;
+  padding: 35px;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 700px) {
+  nav {
+    overflow-x: auto;
+  }
+
+  nav button {
+    white-space: nowrap;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="logo">C.A.R. <span>APEX</span></div>
+
+  <button onclick="showPage('home')">Home</button>
+  <button onclick="showPage('captain')">Captain</button>
+  <button onclick="showPage('explore')">Explore</button>
+  <button onclick="showPage('quiz')">Quiz</button>
+  <button onclick="showPage('badges')">Badges</button>
+</nav>
+
+
+<!-- HOME -->
+<section id="home" class="panel active">
+
+  <div class="hero">
+    <div>
+
+      <div class="tag">
+        CREATIVE AUTOMOBILE REDESIGN
+      </div>
+
+      <h1>
+        APEX<br>
+        <span>GARAGE</span>
+      </h1>
+
+      <p>
+        Welcome to the C.A.R. command center, where legendary machines,
+        the full crew, wild ideas and automotive experiments share one
+        digital garage.
+      </p>
+
+      <div class="cta">
+        <button class="primary" onclick="showPage('explore')">
+          Explore Apex
+        </button>
+
+        <button onclick="showPage('quiz')">
+          Enter Quiz Zone
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <main>
+
+    <!-- CREW -->
+    <div class="section">
+
+      <h2>👥 Full Apex Crew</h2>
+
+      <p class="sub">
+        The official Apex roster.
+      </p>
+
+      <div id="crew" class="grid"></div>
+
+    </div>
+
+
+    <!-- MINISTRIES -->
+    <div class="section">
+
+      <h2>🏛️ Apex Ministries</h2>
+
+      <p class="sub">
+        Every division has a job.
+      </p>
+
+      <div id="ministries" class="grid"></div>
+
+    </div>
+
+
+    <!-- RULES -->
+    <div class="section">
+
+      <h2>📜 Garage Rules</h2>
+
+      <div id="rules" class="grid"></div>
+
+    </div>
+
+
+    <!-- WALL OF FAME -->
+    <div class="section">
+
+      <h2>🏆 Wall of Fame</h2>
+
+      <div class="grid">
+
+        <div class="card">
+          <div class="badge">🫡</div>
+          <h3>Captain's Apex</h3>
+          <p>
+            Captain Harnish, founder, driver and chief C.A.R. designer.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="badge">🤝</div>
+          <h3>Crew Spirit</h3>
+          <p>
+            Build together. Help the team. Leave nobody behind.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="badge">🚗</div>
+          <h3>Kochi Spotter Run</h3>
+          <p>
+            Vintage Mercedes-style machine, Miura, Jaguar XF and BMW M4
+            added to the spotting legend.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="badge">🎵</div>
+          <h3>Apex Celebration</h3>
+          <p>
+            Ilaiyaraaja is officially part of Apex celebrations.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</section>
+
+
+<!-- CAPTAIN -->
+<section id="captain" class="panel">
+
+  <main>
+
+    <div class="section">
+
+      <h2>🫡 Captain Harnish</h2>
+
+      <p class="sub">
+        C.A.R. driver seat: Captain Harnish.
+        Front passenger: Susil.
+        Rear crew: Shiva + Captain Paapi.
+      </p>
+
+      <div class="grid">
+
+        <div class="card">
+
+          <div class="badge">🫡</div>
+
+          <h3>Captain Profile</h3>
+
+          <p>
+            Automobile enthusiast, C.A.R. founder and Apex Garage commander.
+          </p>
+
+          <span class="tag">0511</span>
+          <span class="tag">Dodge is King</span>
+          <span class="tag">C.A.R.</span>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="badge">🚘</div>
+
+          <h3>Dream Machine</h3>
+
+          <p>
+            <b>1970 Dodge Challenger</b>
+          </p>
+
+          <p>
+            Name: <b>Thalluvandi</b>
+          </p>
+
+          <p>
+            Matte black • Blood-red interior • Manual
+          </p>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="badge">🏁</div>
+
+          <h3>Garage Motto</h3>
+
+          <p>
+            Create it. Build it. Drive the idea.
+          </p>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="badge">🚗</div>
+
+          <h3>C.A.R. Meaning</h3>
+
+          <p>
+            <b>Creative Automobile Redesign</b>
+          </p>
+
+          <p>
+            The garage where automobile ideas become reality.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</section>
+
+
+<!-- EXPLORE -->
+<section id="explore" class="panel">
+
+  <main>
+
+    <div class="section">
+
+      <h2>🎲 Explore Apex</h2>
+
+      <p class="sub">
+        Every press reveals a different piece of the garage.
+        Discoveries do not repeat until the pool is exhausted.
+      </p>
+
+      <div class="toolbar">
+
+        <button class="primary" onclick="exploreApex()">
+          🔎 Reveal Something Random
+        </button>
+
+      </div>
+
+      <div id="exploreResult" class="card result">
+        Ready when you are, Captain.
+      </div>
+
+    </div>
+
+
+    <div class="section">
+
+      <h2>🚘 Garage Machines</h2>
+
+      <div id="machines" class="grid"></div>
+
+    </div>
+
+  </main>
+
+</section>
+
+
+<!-- QUIZ -->
+<section id="quiz" class="panel">
+
+  <main>
+
+    <div class="section">
+
+      <h2>🧠 Apex Quiz Zone</h2>
+
+      <p class="sub">
+        Questions shuffle every time.
+      </p>
+
+      <div id="quizBox" class="card quiz"></div>
+
+    </div>
+
+  </main>
+
+</section>
+
+
+<!-- BADGES -->
+<section id="badges" class="panel">
+
+  <main>
+
+    <div class="section">
+
+      <h2>🏅 Machine Badges</h2>
+
+      <p class="sub">
+        Every machine gets its own Apex badge.
+      </p>
+
+      <div id="badgeGrid" class="grid"></div>
+
+    </div>
+
+  </main>
+
+</section>
+
+
+<footer>
+  C.A.R. APEX GARAGE • Built for Captain Harnish • Main Branch
+</footer>
+
+
+<button
+  class="maximize"
+  title="Maximize"
+  onclick="maximizeGarage()">
+  ⛶
+</button>
+
+
+<script>
+
+/* =========================
+   FULL CREW
+========================= */
+
+const crew = [
+
+  ["🫡", "Captain Harnish", "C.A.R. Founder & Driver"],
+
+  ["🔧", "Susil", "Front-seat engineer & teammate"],
+
+  ["🕷️", "Shiva", "Spider-Man + cricket finisher"],
+
+  ["💚", "Sagar", "Hulk of the crew"],
+
+  ["⚡", "Harshiv", "Doctor Strange + speed specialist"],
+
+  ["🎯", "Deva", "Mission specialist"],
+
+  ["🏎️", "Max Verstappen", "Apex racing consultant"],
+
+  ["🧠", "Sherlock", "Investigation division"],
+
+  ["🦇", "Batman", "Night operations"],
+
+  ["🤖", "Cyborg", "Systems division"],
+
+  ["⚔️", "Kratos", "Mythic strength division"],
+
+  ["🃏", "Joker", "Unpredictable ideas division"],
+
+  ["🐍", "Loki", "Strategy division"],
+
+  ["💥", "Iron Man", "Technology division"],
+
+  ["🎯", "John Wick", "Precision division"],
+
+  ["🏎️", "Dom", "Family & driving division"],
+
+  ["⚡", "Lightning McQueen", "Racing division"],
+
+  ["🎩", "Mr. Bean", "Comedy engineering"],
+
+  ["🧪", "Doofenshmirtz", "Experimental inventions"],
+
+  ["🛠️", "Phineas & Ferb", "Build team"],
+
+  ["👔", "Thomas Shelby", "Operations"],
+
+  ["🧪", "Walter White", "Chemistry consultant"],
+
+  ["👑", "Roshna", "Apex crew & friendship division"],
+
+  ["🤖", "Optimus Prime", "Autobot command"],
+
+  ["🐝", "Bumblebee", "Recon & communications"],
+
+  ["🛕", "Appan Murugan", "Apex guardian"],
+
+  ["🎵", "Ilaiyaraaja", "Apex celebration maestro"]
+
+];
+
+
+/* =========================
+   MINISTRIES
+========================= */
+
+const ministries = [
+
+  [
+    "🏁",
+    "Ministry of Racing",
+    "Lap strategy, racing and clean finishes."
+  ],
+
+  [
+    "🔬",
+    "Ministry of Intelligence & Experiments",
+    "Prototype thinking, experiments and engineering ideas."
+  ],
+
+  [
+    "🎨",
+    "Ministry of Creative Redesign",
+    "Turns ordinary automobile ideas into C.A.R. creations."
+  ],
+
+  [
+    "🛡️",
+    "Ministry of Apex Security",
+    "Protects the garage and its crew."
+  ],
+
+  [
+    "📡",
+    "Ministry of Recon",
+    "Spots machines and gathers automotive intelligence."
+  ],
+
+  [
+    "🏆",
+    "Ministry of Records",
+    "Maintains badges, milestones and Wall of Fame entries."
+  ],
+
+  [
+    "🧭",
+    "Ministry of Exploration",
+    "Maps the unknown corners of Apex."
+  ],
+
+  [
+    "🎬",
+    "Ministry of Stories",
+    "Keeps track of the legendary C.A.R. moments."
+  ]
+
+];
+
+
+/* =========================
+   GARAGE RULES
+========================= */
+
+const rules = [
+
+  "Respect every machine.",
+
+  "Crew first, ego second.",
+
+  "No reckless driving. Build responsibly.",
+
+  "Every machine gets a story.",
+
+  "Ideas are welcome at Apex.",
+
+  "Keep the garage organized.",
+
+  "Celebrate team achievements.",
+
+  "Help your fellow crew members.",
+
+  "Dream big, design bigger.",
+
+  "Dodge is King."
+
+];
+
+
+/* =========================
+   MACHINES
+========================= */
+
+const machines = [
+
+  [
+    "🚘",
+    "Thalluvandi",
+    "1970 Dodge Challenger",
+    "Captain's dream machine"
+  ],
+
+  [
+    "🐝",
+    "Aston Martin Vantage S",
+    "Iron Man theme",
+    "Latest replacement for Iron Chariot"
+  ],
+
+  [
+    "🏎️",
+    "Dodge Chaser R/T 0511",
+    "Apex special",
+    "0511 garage identity"
+  ],
+
+  [
+    "⚡",
+    "Apex Altiora",
+    "C.A.R. concept",
+    "High-altitude concept machine"
+  ],
+
+  [
+    "🦅",
+    "Vulture",
+    "Paapi's machine",
+    "Captain Paapi's garage ride"
+  ],
+
+  [
+    "🟧",
+    "Miura",
+    "Black + rustic orange",
+    "Kochi spotting legend"
+  ],
+
+  [
+    "🏁",
+    "GT40",
+    "Track icon",
+    "Endurance legend"
+  ],
+
+  [
+    "💎",
+    "Gemera",
+    "Hyper-GT",
+    "Four-seat hypercar"
+  ],
+
+  [
+    "🎩",
+    "Bacalar",
+    "Grand tourer",
+    "Luxury division"
+  ],
+
+  [
+    "🐂",
+    "Miura in Dodge Colours",
+    "C.A.R. redesign",
+    "Classic meets Apex"
+  ]
+
+];
+
+
+/* =========================
+   BUILD CREW CARDS
+========================= */
+
+const crewContainer = document.getElementById("crew");
+
+crew.forEach(member => {
+
+  crewContainer.innerHTML += `
+
+    <div class="card">
+
+      <div class="badge">
+        ${member[0]}
+      </div>
+
+      <h3>
+        ${member[1]}
+      </h3>
+
+      <p>
+        ${member[2]}
+      </p>
+
+    </div>
+
+  `;
+
+});
+
+
+/* =========================
+   BUILD MINISTRIES
+========================= */
+
+const ministryContainer =
+  document.getElementById("ministries");
+
+ministries.forEach(ministry => {
+
+  ministryContainer.innerHTML += `
+
+    <div class="card">
+
+      <h3>
+        ${ministry[0]} ${ministry[1]}
+      </h3>
+
+      <p>
+        ${ministry[2]}
+      </p>
+
+    </div>
+
+  `;
+
+});
+
+
+/* =========================
+   BUILD RULES
+========================= */
+
+const rulesContainer =
+  document.getElementById("rules");
+
+rules.forEach(rule => {
+
+  rulesContainer.innerHTML += `
+
+    <div class="card rule">
+
+      <p>
+        ${rule}
+      </p>
+
+    </div>
+
+  `;
+
+});
+
+
+/* =========================
+   BUILD MACHINES
+========================= */
+
+const machineContainer =
+  document.getElementById("machines");
+
+machines.forEach(machine => {
+
+  machineContainer.innerHTML += `
+
+    <div class="card machine">
+
+      <div>
+
+        <div class="emoji">
+          ${machine[0]}
+        </div>
+
+        <h3>
+          ${machine[1]}
+        </h3>
+
+        <p>
+          ${machine[2]}
+        </p>
+
+      </div>
+
+      <span class="small">
+        ${machine[3]}
+      </span>
+
+    </div>
+
+  `;
+
+});
+
+
+/* =========================
+   MACHINE BADGES
+========================= */
+
+const badgeIcons = [
+  "🏆",
+  "🔥",
+  "⚙️",
+  "🚀",
+  "🦅",
+  "🟧",
+  "🏁",
+  "💎",
+  "👑",
+  "🎨"
+];
+
+const badgeContainer =
+  document.getElementById("badgeGrid");
+
+machines.forEach((machine, index) => {
+
+  badgeContainer.innerHTML += `
+
+    <div class="card">
+
+      <div class="badge">
+        ${badgeIcons[index]}
+      </div>
+
+      <h3>
+        ${machine[1]}
+      </h3>
+
+      <p>
+        ${machine[2]}
+      </p>
+
+      <span class="tag">
+        APEX BADGE
+        ${String(index + 1).padStart(2, "0")}
+      </span>
+
+    </div>
+
+  `;
+
+});
+
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+
+function showPage(pageId) {
+
+  document
+    .querySelectorAll(".panel")
+    .forEach(panel => {
+
+      panel.classList.remove("active");
+
+    });
+
+  document
+    .getElementById(pageId)
+    .classList.add("active");
+
+  window.scrollTo(0, 0);
+
+  if (pageId === "quiz") {
+    createQuiz();
+  }
+
+}
+
+
+/* =========================
+   EXPLORE APEX
+========================= */
+
+const discoveries = [
+
+  "Captain's 1970 Dodge Challenger is named Thalluvandi.",
+
+  "Susil holds the front passenger seat in the official C.A.R. layout.",
+
+  "Captain Paapi's machine is Vulture.",
+
+  "Roshna is included in the Apex crew and friendship division.",
+
+  "The latest Iron Man-themed machine is the Aston Martin Vantage S.",
+
+  "The Miura spotted during the Kochi run was black with rustic orange.",
+
+  "The Kochi spotting run also included a Jaguar XF.",
+
+  "The Kochi spotting run also included a BMW M4.",
+
+  "Ilaiyaraaja is part of Apex celebrations.",
+
+  "C.A.R. means Creative Automobile Redesign.",
+
+  "0511 is part of the Captain's garage identity.",
+
+  "Wall of Fame records team achievements.",
+
+  "Apex Exploration avoids repeating discoveries until the pool is exhausted.",
+
+  "Dodge is King in the Captain's garage.",
+
+  "The Captain's official driving position is the driver seat."
+
+];
+
+let explored = [];
+
+
+function exploreApex() {
+
+  if (explored.length === discoveries.length) {
+    explored = [];
+  }
+
+  const available = discoveries
+    .map((item, index) => index)
+    .filter(index => !explored.includes(index));
+
+  const randomIndex =
+    available[Math.floor(Math.random() * available.length)];
+
+  explored.push(randomIndex);
+
+  document.getElementById("exploreResult").innerHTML =
+
+    "🔎 " + discoveries[randomIndex];
+
+}
+
+
+/* =========================
+   QUIZ QUESTIONS
+========================= */
+
+const questions = [
+
+  [
+    "Which machine is Captain Harnish's dream car?",
+    [
+      "1970 Dodge Challenger",
+      "BMW M4",
+      "Jaguar XF",
+      "GT40"
+    ],
+    0
+  ],
+
+  [
+    "What does C.A.R. stand for?",
+    [
+      "Creative Automobile Redesign",
+      "Captain Auto Racing",
+      "Classic Apex Registry",
+      "Custom Automotive Republic"
+    ],
+    0
+  ],
+
+  [
+    "Who is Captain Paapi?",
+    [
+      "A member of the Apex crew",
+      "A car brand",
+      "A race track",
+      "A robot"
+    ],
+    0
+  ],
+
+  [
+    "Which car replaced Iron Chariot in the latest garage plan?",
+    [
+      "Aston Martin Vantage S in Iron Man theme",
+      "Jaguar XF",
+      "Miura",
+      "GT40"
+    ],
+    0
+  ],
+
+  [
+    "What is the name of the 1970 Dodge Challenger?",
+    [
+      "Thalluvandi",
+      "Vulture",
+      "Altiora",
+      "Surangani"
+    ],
+    0
+  ],
+
+  [
+    "Which classic was spotted in black with rustic orange?",
+    [
+      "Lamborghini Miura",
+      "BMW M4",
+      "Jaguar XF",
+      "Bacalar"
+    ],
+    0
+  ],
+
+  [
+    "Who is the C.A.R. founder?",
+    [
+      "Captain Harnish",
+      "Susil",
+      "Sagar",
+      "Deva"
+    ],
+    0
+  ],
+
+  [
+    "What is the garage number motif?",
+    [
+      "0511",
+      "007",
+      "911",
+      "2026"
+    ],
+    0
+  ],
+
+  [
+    "Who leads the Autobot command?",
+    [
+      "Optimus Prime",
+      "Sherlock",
+      "Kratos",
+      "Dom"
+    ],
+    0
+  ],
+
+  [
+    "What does Explore Apex do?",
+    [
+      "Reveal randomized garage discoveries",
+      "Delete machines",
+      "Change passwords",
+      "Start a real race"
+    ],
+    0
+  ],
+
+  [
+    "Who occupies the front passenger seat?",
+    [
+      "Susil",
+      "Sagar",
+      "Deva",
+      "Walter White"
+    ],
+    0
+  ],
+
+  [
+    "Who is the Apex guardian?",
+    [
+      "Appan Murugan",
+      "Batman",
+      "Sherlock",
+      "Cyborg"
+    ],
+    0
+  ],
+
+  [
+    "Which machine belongs to Captain Paapi?",
+    [
+      "Vulture",
+      "Thalluvandi",
+      "Gemera",
+      "Bacalar"
+    ],
+    0
+  ],
+
+  [
+    "Which number is connected to the Captain's garage identity?",
+    [
+      "0511",
+      "1234",
+      "2020",
+      "7777"
+    ],
+    0
+  ]
+
+];
+
+let currentQuiz = [];
+
+
+/* =========================
+   CREATE RANDOM QUIZ
+========================= */
+
+function createQuiz() {
+
+  currentQuiz = [...questions]
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 5);
+
+  renderQuiz();
+
+}
+
+
+/* =========================
+   RENDER QUIZ
+========================= */
+
+function renderQuiz() {
+
+  const quizBox =
+    document.getElementById("quizBox");
+
+  quizBox.innerHTML = "";
+
+  currentQuiz.forEach((question, number) => {
+
+    const wrapper =
+      document.createElement("div");
+
+    wrapper.innerHTML = `
+
+      <h3>
+        ${number + 1}. ${question[0]}
+      </h3>
+
+    `;
+
+    question[1].forEach((answer, answerIndex) => {
+
+      const button =
+        document.createElement("button");
+
+      button.textContent = answer;
+
+      button.onclick = () => {
+
+        if (answerIndex === question[2]) {
+
+          button.classList.add("correct");
+
+        } else {
+
+          button.classList.add("wrong");
+
+          const correctButton =
+            wrapper.querySelectorAll("button")
+              [question[2]];
+
+          correctButton.classList.add("correct");
+
+        }
+
+      };
+
+      wrapper.appendChild(button);
+
+    });
+
+    quizBox.appendChild(wrapper);
+
+  });
+
+}
+
+
+createQuiz();
+
+
+/* =========================
+   MAXIMIZE
+========================= */
+
+function maximizeGarage() {
+
+  if (document.documentElement.requestFullscreen) {
+
+    document.documentElement.requestFullscreen();
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
